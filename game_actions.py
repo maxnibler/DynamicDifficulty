@@ -87,6 +87,15 @@ class GameCalc:
                 elif enemyAction == 'Dodge':
                     pStats = HeavyAttack_Dodge(pStats, eStats)
                     state.setPlayerStats(pStats)
+
+                elif enemyAction == 'Light Attack':
+                    pAD = pStats['Attack Damage']
+                    eAD = eStats['Attack Damage']
+                    pAD += pStats['Strength']
+                    eAD += pStats['Dexterity']
+                    state.incrementEnemyStat('Health', -pAD)
+                    state.incrementPlayerStat('Health', -eAD)
+                    
                     
             elif playerAction == 'Parry':
                 if enemyAction == 'Heavy Attack':
@@ -114,6 +123,14 @@ class GameCalc:
                 elif enemyAction == 'Parry':
                     pStats = LightAttack_Parry(pStats, eStats)
                     state.setPlayerStats(pStats)
+
+                elif enemyAction == 'Heavy Attack':
+                    pAD = pStats['Attack Damage']
+                    eAD = eStats['Attack Damage']
+                    pAD += pStats['Dexterity']
+                    eAD += pStats['Strength']
+                    state.incrementEnemyStat('Health', -pAD)
+                    state.incrementPlayerStat('Health', -eAD)
                     
         return state
         
