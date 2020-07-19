@@ -19,6 +19,23 @@ def HeavyAttack_Dodge(attackerStats, defenderStats):
         attackerStats['Health'] -= 1
     return attackerStats
 
+def LightAttack_Dodge(attackerStats, defenderStats):
+    aDex = attackerStats['Dexterity']
+    dDex = defenderStats['Dexterity']
+    if aDex > dDex:
+        defenderStats['Health'] -= aDex - dDex
+    else:
+        defenderStats['Health'] -= 1
+    return defenderStats
+
+def LightAttack_Parry(attackerStats, defenderStats):
+    aStrength = attackerStats['Strength']
+    dStrength = defenderStats['Strength']
+    if dStrength > aStrength:
+        attackerStats['Health'] -= dStrength-aStrength
+    else:
+        attackerStats['Health'] -= 1
+    return attackerStats
 
 class GameCalc:
     
@@ -43,12 +60,16 @@ class GameCalc:
     def calcTurn(self, playerAction, enemyAction, state):
         pStats = state.getPlayerStats()
         eStats = state.getEnemyStats()
+        
         if playerAction == enemyAction:
             if playerAction == 'Light Attack':
                 pAD = pStats['Attack Damage']
                 eAD = eStats['Attack Damage']
+                pAD += pStats['Dexterity']
+                eAD += pStats['Dexterity']
                 state.incrementEnemyStat('Health', -pAD)
                 state.incrementPlayerStat('Health', -eAD)
+                
             elif playerAction == 'Heavy Attack':
                 pAD = pStats['Attack Damage']
                 eAD = eStats['Attack Damage']
@@ -56,23 +77,43 @@ class GameCalc:
                 eAD += pStats['Strength']
                 state.incrementEnemyStat('Health', -pAD)
                 state.incrementPlayerStat('Health', -eAD)
+                
         else:
             if playerAction == 'Heavy Attack':
                 if enemyAction == 'Parry':
                     eStats = HeavyAttack_Parry(pStats, eStats)
                     state.setEnemyStats(eStats)
-                if enemyAction == 'Dodge':
+                    
+                elif enemyAction == 'Dodge':
                     pStats = HeavyAttack_Dodge(pStats, eStats)
                     state.setPlayerStats(pStats)
+                    
             elif playerAction == 'Parry':
                 if enemyAction == 'Heavy Attack':
                     pStats = HeavyAttack_Parry(eStats, pStats)
                     state.setPlayerStats(pStats)
+
+                elif enemyAction == 'Light Attack':
+                    eStats = LightAttack_Parry(eStats, pStats)
+                    state.setEnemyStats(eStats)
+                    
             elif playerAction == 'Dodge':
                 if enemyAction == 'Heavy Attack':
                     eStats = HeavyAttack_Dodge(eStats, pStats)
                     state.setEnemyStats(eStats)
-        
-                
+                    
+                elif enemyAction == 'Light Attack':
+                    pStats = LightAttack_Dodge(eStats, pStats)
+                    state.setPlayerStats(pStats)
+                    
+            elif playerAction == 'Light Attack':
+                if enemyAction == 'Dodge':
+                    eStats = LightAttack_Dodge(pStats, eStats)
+                    state.setEnemyStats(eStats)
+
+                elif enemyAction == 'Parry':
+                    pStats = LightAttack_Parry(pStats, eStats)
+                    state.setPlayerStats(pStats)
+                    
         return state
         

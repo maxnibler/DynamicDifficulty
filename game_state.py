@@ -5,13 +5,13 @@ class GameState:
     
     def __init__(self):
         self.playerStats = {
-            'Strength' : 10,
-            'Dexterity' : 20,
+            'Strength' : 15,
+            'Dexterity' : 12,
             'Health' : 100,
             'Attack Damage' : 10
         }
         self.enemyStats = {
-            'Strength' : 9,
+            'Strength' : 12,
             'Dexterity' : 10,
             'Health' : 100,
             'Attack Damage' : 10
