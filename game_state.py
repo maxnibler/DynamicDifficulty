@@ -1,19 +1,20 @@
 class GameState:
+    
     playerStats = {}
     enemyStats = {}
     
     def __init__(self):
         self.playerStats = {
-            'Strength' : 0,
-            'Dexterity' : 0,
-            'Health' : 0,
-            'Attack Damage' : 0
+            'Strength' : 10,
+            'Dexterity' : 20,
+            'Health' : 100,
+            'Attack Damage' : 10
         }
         self.enemyStats = {
-            'Strength' : 0,
-            'Dexterity' : 0,
-            'Health' : 0,
-            'Attack Damage' : 0
+            'Strength' : 9,
+            'Dexterity' : 10,
+            'Health' : 100,
+            'Attack Damage' : 10
         }
     
     def getPlayerStats(self):
@@ -22,17 +23,11 @@ class GameState:
     def getEnemyStats(self):
         return self.enemyStats
 
-    def setPlayerStats(self, s, d, h, a):
-        self.playerStats['Strength'] = s
-        self.playerStats['Dexterity'] = d
-        self.playerStats['Health'] = h
-        self.playerStats['Attack Damage'] = a
+    def setPlayerStats(self, statDict):
+        self.playerStats = statDict
 
-    def setEnemyStats(self, s, d, h, a):
-        self.enemyStats['Strength'] = s
-        self.enemyStats['Dexterity'] = d
-        self.enemyStats['Health'] = h
-        self.enemyStats['Attack Damage'] = a
+    def setEnemyStats(self, statDict):
+        self.enemyStats = statDict
 
     def incrementEnemyStat(self, key, amount):
         if key not in self.enemyStats:
