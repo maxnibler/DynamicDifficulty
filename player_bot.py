@@ -9,6 +9,9 @@ class player_bot:
     def __init__(self, stats):
         self.stats = stats
 
+    def change_stats(self, new_stats):
+        self.stats = new_stats
+
     def behavior_tree_setup(self):
         # Checks which stats are higher than others in order to weight those
         # more heavily in behavior tree
@@ -16,7 +19,7 @@ class player_bot:
         mid_stat = None
         lowest_stat = None
         for x in self.stats:
-            if x != 'health':
+            if x != 'Health':
                 if highest_stat == None or self.stats[x] > self.stats[highest_stat]:
                     lowest_stat = mid_stat
                     mid_stat = highest_stat
@@ -36,34 +39,34 @@ class player_bot:
         # Lowest stat has 1 branch
 
         dex_branch = RandomSelector(name='Dex Branch')
-        dodging = Action('dodge')
-        l_attacking = Action('light attack')
+        dodging = Action('Dodge')
+        l_attacking = Action('Light Attack')
         dex_branch.child_nodes = [dodging, l_attacking]
 
         str_branch = RandomSelector(name='Strength Branch')
-        parrying = Action('parry')
-        h_attacking = Action('heavy attack')
+        parrying = Action('Parry')
+        h_attacking = Action('Heavy Attack')
         str_branch.child_nodes = [parrying, parrying, h_attacking]
 
         ad_branch = RandomSelector(name='Attack Damage Branch')
-        parrying = Action('parry')
-        h_attacking = Action('heavy attack')
+        parrying = Action('Parry')
+        h_attacking = Action('Heavy Attack')
         ad_branch.child_nodes = [parrying, h_attacking, h_attacking]
 
-        if highest_stat == 'dexterity':
-            if mid_stat == 'strength':
+        if highest_stat == 'Dexterity':
+            if mid_stat == 'Strength':
                 root.child_nodes = [dex_branch, dex_branch, dex_branch, str_branch, str_branch, ad_branch]
-            elif mid_stat == 'attack damage':
+            elif mid_stat == 'Attack Damage':
                 root.child_nodes = [dex_branch, dex_branch, dex_branch, ad_branch, ad_branch, str_branch]
-        elif highest_stat == 'strength':
-            if mid_stat == 'dexterity':
+        elif highest_stat == 'Strength':
+            if mid_stat == 'Dexterity':
                 root.child_nodes = [str_branch, str_branch, str_branch, dex_branch, dex_branch, ad_branch]
-            elif mid_stat == 'attack damage':
+            elif mid_stat == 'Attack Damage':
                 root.child_nodes = [str_branch, str_branch, str_branch, ad_branch, ad_branch, dex_branch]
         else:
-            if mid_stat == 'dexterity':
+            if mid_stat == 'Dexterity':
                 root.child_nodes = [ad_branch, ad_branch, ad_branch, dex_branch, dex_branch, str_branch]
-            elif mid_stat == 'strength':
+            elif mid_stat == 'Strength':
                 root.child_nodes = [ad_branch, ad_branch, ad_branch, str_branch, str_branch, dex_branch]
 
         return root
