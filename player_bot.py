@@ -1,7 +1,3 @@
-# REQURIRED LINES TO RUN AFTER IMPORTING FILE:
-# Player_Bot = player_bot(stats)
-# Player_Bot.behavior_tree_run()
-
 import random
 
 class player_bot:

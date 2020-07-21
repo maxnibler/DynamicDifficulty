@@ -1,22 +1,12 @@
 class GameState:
-    
+
     playerStats = {}
     enemyStats = {}
-    
-    def __init__(self):
-        self.playerStats = {
-            'Strength' : 15,
-            'Dexterity' : 12,
-            'Health' : 100,
-            'Attack Damage' : 10
-        }
-        self.enemyStats = {
-            'Strength' : 12,
-            'Dexterity' : 10,
-            'Health' : 100,
-            'Attack Damage' : 10
-        }
-    
+
+    def __init__(self, playerStats, enemyStats):
+        self.playerStats = playerStats
+        self.enemyStats = enemyStats
+
     def getPlayerStats(self):
         return self.playerStats
 
