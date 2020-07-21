@@ -1,20 +1,23 @@
 from player_bot import player_bot
-from enemy_bot import enemy_bot
+#from enemy_bot import enemy_bot
+from random_bot import randBot
 from game_state import GameState
 def simulate_game(state, game):
     Player_Bot = player_bot(state.getPlayerStats())
 
-    Enemy_Bot = enemy_bot(state.getEnemyStats())
+    #Enemy_Bot = enemy_bot(state.getEnemyStats())
 
     # Makes copy of state for use in function
-    curr_state = GameState(state.getPlayerStats(), state.getEnemyStats())
+    curr_state = state.copy()
 
     while curr_state.getPlayerStats()['Health'] > 0 and curr_state.getEnemyStats()['Health'] > 0:
         Player_Bot.change_stats(curr_state.getPlayerStats())
         player_move = Player_Bot.behavior_tree_run()
-        Enemy_Bot.change_stats(curr_state.getEnemyStats())
-        enemy_move = Enemy_Bot.behavior_tree_run()
-
+        #Enemy_Bot.change_stats(curr_state.getEnemyStats())
+        enemy_move = randBot()
+        #enemy_move = Enemy_Bot.behavior_tree_run()
+        print("Player move: "+player_move)
+        print("Enemy move: "+enemy_move)
         curr_state = game.actionSet(player_move, enemy_move, curr_state)
 
 

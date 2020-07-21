@@ -3,9 +3,9 @@ class GameState:
     playerStats = {}
     enemyStats = {}
 
-    def __init__(self, playerStats, enemyStats):
-        self.playerStats = playerStats
-        self.enemyStats = enemyStats
+    def __init__(self, pStats, eStats):
+        self.playerStats = pStats
+        self.enemyStats = eStats
 
     def getPlayerStats(self):
         return self.playerStats
@@ -32,3 +32,9 @@ class GameState:
             return
         else:
             self.playerStats[key] += amount
+
+    def copy(self):
+        ps = dict(self.playerStats)
+        es = dict(self.enemyStats)
+        newState = GameState(ps, es)
+        return newState
