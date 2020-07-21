@@ -16,8 +16,8 @@ def simulate_game(state, game):
         #Enemy_Bot.change_stats(curr_state.getEnemyStats())
         enemy_move = randBot()
         #enemy_move = Enemy_Bot.behavior_tree_run()
-        print("Player move: "+player_move)
-        print("Enemy move: "+enemy_move)
+        #print("Player move: "+player_move)
+        #print("Enemy move: "+enemy_move)
         curr_state = game.actionSet(player_move, enemy_move, curr_state)
 
 
