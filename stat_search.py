@@ -1,5 +1,6 @@
 from game_state import GameState
 from simulate import simulate_game
+import random
 
 class simulate_node:
     key = None
@@ -37,16 +38,17 @@ class simulate_node:
         if self.dexterity == None:
             self.dexterity = d
         if self.attackDamage == None:
-            self.attackDamage == a
+            self.attackDamage = a
 
     def execute(self, playerStats):
         enemyStats = {
-            'Health' : health,
-            'Strength' : strength,
-            'Dexterity' : dexterity,
-            'Attack Damage' : attackDamage
+            'Health' : self.health,
+            'Strength' : self.strength,
+            'Dexterity' : self.dexterity,
+            'Attack Damage' : self.attackDamage
         }
         state = GameState(dict(playerStats), dict(enemyStats))
+        self.win = simulate_game(state)
 
 class node:
     key = ""
@@ -89,8 +91,25 @@ def expand(parent, key, low, high, increment):
     return parent
 
 def tupleRand(pair):
-    total = pair[0] + pair[1]
-    return total/2
+    rand = random.randrange(pair[0], pair[1])
+    return rand
+
+def findStat(key, ranges, playerStats):
+    statRange = ranges[key]
+    root = node("Root", 0)
+    root.printSelf()
+    root = expand(root, key, statRange[0], statRange[1], 1)
+    for healthNode in root.getChildren():
+        simNode = simulate_node(healthNode)
+        hDef = tupleRand(ranges['Health'])
+        sDef = tupleRand(ranges['Strength'])
+        dDef = tupleRand(ranges['Dexterity'])
+        aDef = tupleRand(ranges['Attack Damage'])
+        simNode.setDefaults(hDef, sDef, dDef, aDef)
+        simNode.execute(playerStats)
+        simNode.printSelf()
+    return 100
+
 
 def searchStats(playerStats, winrate):
     eStats = {}
@@ -98,21 +117,11 @@ def searchStats(playerStats, winrate):
     eStats['Strength'] = 10
     eStats['Dexterity'] = 10
     eStats['Attack Damage'] = 10
-    healthRange = (10, 200)
-    strRange = (5, 40)
-    dexRange = (5, 40)
-    attackRange = (1, 40)
-    root = node("Root", 0)
-    root.printSelf()
-    root = expand(root, 'Health', healthRange[0], healthRange[1], 1)
-    for healthNode in root.getChildren():
-        expand(healthNode, 'Strength', 1, 40, 1)
-        for strNode in healthNode.getChildren():
-            simNode = simulate_node(strNode)
-            hDef = tupleRand(healthRange)
-            sDef = tupleRand(strRange)
-            dDef = tupleRand(dexRange)
-            aDef = tupleRand(attackRange)
-            simNode.setDefaults(hDef, sDef, dDef, aDef)
-    
+    ranges = {
+        'Health': (10, 200),
+        'Strength': (5, 40),
+        'Dexterity': (5, 40),
+        'Attack Damage': (1, 40)
+    }
+    print(findStat('Health', ranges, playerStats))
     return eStats
