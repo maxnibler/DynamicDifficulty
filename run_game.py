@@ -1,5 +1,4 @@
 from game_state import GameState
-from game_actions import GameCalc
 from simulate import simulate_game
 from stat_search import searchStats
 
@@ -14,14 +13,13 @@ enemyStats = {}
 enemyStats = searchStats(playerStats, winrate)
 
 state = GameState(playerStats, enemyStats)
-game = GameCalc()
 
 player_wins = 0
 enemy_wins = 0
 ties = 0
 
 for x in range(100):
-    result = simulate_game(state, game)
+    result = simulate_game(state)
     if result == 1:
         #print("Player Bot Wins")
         player_wins +=1

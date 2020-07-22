@@ -1,8 +1,10 @@
 from player_bot import player_bot
 #from enemy_bot import enemy_bot
 from random_bot import randBot
+from game_actions import GameCalc
 from game_state import GameState
-def simulate_game(state, game):
+def simulate_game(state):
+    game = GameCalc()
     Player_Bot = player_bot(state.getPlayerStats())
 
     #Enemy_Bot = enemy_bot(state.getEnemyStats())

@@ -28,7 +28,25 @@ class simulate_node:
         print("Health:",self.health,"Strength:",self.strength,\
               "Dexterity:",self.dexterity,"Attack Damage:",
               self.attackDamage)
-    
+
+    def setDefaults(self, h, s, d, a):
+        if self.health == None:
+            self.health = h
+        if self.strength == None:
+            self.strength = s
+        if self.dexterity == None:
+            self.dexterity = d
+        if self.attackDamage == None:
+            self.attackDamage == a
+
+    def execute(self, playerStats):
+        enemyStats = {
+            'Health' : health,
+            'Strength' : strength,
+            'Dexterity' : dexterity,
+            'Attack Damage' : attackDamage
+        }
+        state = GameState(dict(playerStats), dict(enemyStats))
 
 class node:
     key = ""
@@ -69,7 +87,11 @@ def expand(parent, key, low, high, increment):
         newChild.setParent(parent)
         i += increment
     return parent
-        
+
+def tupleRand(pair):
+    total = pair[0] + pair[1]
+    return total/2
+
 def searchStats(playerStats, winrate):
     eStats = {}
     eStats['Health'] = 100
@@ -87,5 +109,10 @@ def searchStats(playerStats, winrate):
         expand(healthNode, 'Strength', 1, 40, 1)
         for strNode in healthNode.getChildren():
             simNode = simulate_node(strNode)
+            hDef = tupleRand(healthRange)
+            sDef = tupleRand(strRange)
+            dDef = tupleRand(dexRange)
+            aDef = tupleRand(attackRange)
+            simNode.setDefaults(hDef, sDef, dDef, aDef)
     
     return eStats
