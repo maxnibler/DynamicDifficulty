@@ -1,4 +1,34 @@
 from game_state import GameState
+from simulate import simulate_game
+
+class simulate_node:
+    key = None
+    win = None
+    health = None
+    strength = None
+    dexterity = None
+    attackDamage = None
+    parent = None
+    def __init__(self, parent):
+        self.key = "Simulate"
+        self.parent = parent
+        while parent.key != "Root":
+            if parent.key == 'Attack Damage':
+                self.attackDamage = parent.value
+            if parent.key == 'Health':
+                self.health = parent.value
+            if parent.key == 'Dexterity':
+                self.dexterity = parent.value
+            if parent.key == 'Strength':
+                self.strength = parent.value
+            parent = parent.parent
+            
+    def printSelf(self):
+        print("Win?:",self.win)
+        print("Health:",self.health,"Strength:",self.strength,\
+              "Dexterity:",self.dexterity,"Attack Damage:",
+              self.attackDamage)
+    
 
 class node:
     key = ""
@@ -46,9 +76,16 @@ def searchStats(playerStats, winrate):
     eStats['Strength'] = 10
     eStats['Dexterity'] = 10
     eStats['Attack Damage'] = 10
+    healthRange = (10, 200)
+    strRange = (5, 40)
+    dexRange = (5, 40)
+    attackRange = (1, 40)
     root = node("Root", 0)
     root.printSelf()
-    root = expand(root, 'Health', 1, 100, 1)
-    for c in root.getChildren():
-        expand(c, 'Strength', 1, 40, 1)
+    root = expand(root, 'Health', healthRange[0], healthRange[1], 1)
+    for healthNode in root.getChildren():
+        expand(healthNode, 'Strength', 1, 40, 1)
+        for strNode in healthNode.getChildren():
+            simNode = simulate_node(strNode)
+    
     return eStats
