@@ -11,6 +11,7 @@ class simulate_node:
     attackDamage = None
     parent = None
     def __init__(self, parent):
+        self.win = 0
         self.key = "Simulate"
         self.parent = parent
         while parent.key != "Root":
@@ -48,7 +49,8 @@ class simulate_node:
             'Attack Damage' : self.attackDamage
         }
         state = GameState(dict(playerStats), dict(enemyStats))
-        self.win = simulate_game(state)
+        for i in range(10):
+            self.win += simulate_game(state)
 
 class node:
     key = ""
@@ -124,4 +126,7 @@ def searchStats(playerStats, winrate):
         'Attack Damage': (1, 40)
     }
     print(findStat('Health', ranges, playerStats))
+    print(findStat('Strength', ranges, playerStats))
+    print(findStat('Dexterity', ranges, playerStats))
+    print(findStat('Attack Damage', ranges, playerStats))
     return eStats
