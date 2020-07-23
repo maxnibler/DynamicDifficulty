@@ -49,6 +49,10 @@ class enemy_bot:
         root.child_nodes = [dex_execute, str_execute, neutral]
         return root
 
+    def behavior_tree_run(self):
+        behavior_tree = self.behavior_tree_setup()
+        return behavior_tree.execute()
+
 # Nodes
 class Node:
     def __init__(self):
