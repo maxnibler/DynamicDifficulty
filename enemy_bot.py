@@ -51,8 +51,8 @@ class enemy_bot:
         return root
 
     def behavior_tree_run(self):
-        #GET THE STRING AND RETURN IT HERE
-        return randBot()
+        behavior_tree = self.behavior_tree_setup()
+        return behavior_tree.execute()
         
 # Nodes
 class Node:
@@ -84,7 +84,7 @@ class Sequence(Composite):
             if not continue_execution:
                 return False
         else:  # for loop completed without failure; return success
-            return True
+            return continue_execution
 
 #Selector Node taken from P4
 class Selector(Composite):
@@ -92,7 +92,7 @@ class Selector(Composite):
         for child_node in self.child_nodes:
             success = child_node.execute()
             if success:
-                return True
+                return success
         else:  # for loop completed without success; return failure
             return False
 
