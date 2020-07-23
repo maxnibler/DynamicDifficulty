@@ -83,7 +83,7 @@ class Sequence(Composite):
             if not continue_execution:
                 return False
         else:  # for loop completed without failure; return success
-            return True
+            return continue_execution
 
 #Selector Node taken from P4
 class Selector(Composite):
@@ -91,7 +91,7 @@ class Selector(Composite):
         for child_node in self.child_nodes:
             success = child_node.execute()
             if success:
-                return True
+                return success
         else:  # for loop completed without success; return failure
             return False
 
