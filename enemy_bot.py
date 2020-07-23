@@ -3,8 +3,9 @@ from random_bot import randBot
 from game_state import GameState
 
 class enemy_bot:
-    def __init__(self, stats):
+    def __init__(self, stats, player_stats):
         self.stats = stats
+        self.player_stats = player_stats
 
     def change_stats(self, new_stats):
         self.stats = new_stats
@@ -21,7 +22,7 @@ class enemy_bot:
         dex_check = Check(dex_higher_than_str(self.stats))
         dex_branch = Selector(name = 'Dexterity Branch')
         health_check = Sequence(name = "Health Check")
-        health_compare = Check(enemy_more_health(stats))
+        health_compare = Check(enemy_more_health(self.stats, self.player_stats))
         dex_low_health = RandomSelector(name = "Dexterity Branch low Health")
         health_check.child_nodes = [health_compare, l_attacking]
         dex_low_health.child_nodes = [l_attacking, dodging]
@@ -73,7 +74,7 @@ class Check(Node):
         self.check_function = check_function
 
     def execute(self):
-        return self.check_function()
+        return self.check_function
 
 # Composite Nodes
 # Sequence Node code taken from P4
@@ -129,8 +130,8 @@ def dex_higher_than_str(stats):
 def str_higher_than_dex(stats):
     return (stats["Strength"] > stats["Dexterity"])
 
-def enemy_more_health(stats):
-    return (stats["Health"] > getPlayerStats()["Health"])
+def enemy_more_health(stats, player_stats):
+    return (stats["Health"] > player_stats["Health"])
 
 # Leaf Node
 class Action(Leaf):
