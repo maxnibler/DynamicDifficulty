@@ -1,5 +1,5 @@
 from player_bot import player_bot
-#from enemy_bot import enemy_bot
+from enemy_bot import enemy_bot
 from random_bot import randBot
 from game_actions import GameCalc
 from game_state import GameState
@@ -7,7 +7,7 @@ def simulate_game(state):
     game = GameCalc()
     Player_Bot = player_bot(state.getPlayerStats())
 
-    #Enemy_Bot = enemy_bot(state.getEnemyStats())
+    Enemy_Bot = enemy_bot(state.getEnemyStats())
 
     # Makes copy of state for use in function
     curr_state = state.copy()
@@ -16,7 +16,7 @@ def simulate_game(state):
         Player_Bot.change_stats(curr_state.getPlayerStats())
         player_move = Player_Bot.behavior_tree_run()
         #Enemy_Bot.change_stats(curr_state.getEnemyStats())
-        enemy_move = randBot()
+        enemy_move = Enemy_Bot.behavior_tree_run()
         #enemy_move = Enemy_Bot.behavior_tree_run()
         #print("Player move: "+player_move)
         #print("Enemy move: "+enemy_move)

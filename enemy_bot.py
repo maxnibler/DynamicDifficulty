@@ -1,4 +1,5 @@
 import random
+from random_bot import randBot
 from game_state import GameState
 
 class enemy_bot:
@@ -49,6 +50,10 @@ class enemy_bot:
         root.child_nodes = [dex_execute, str_execute, neutral]
         return root
 
+    def behavior_tree_run(self):
+        #GET THE STRING AND RETURN IT HERE
+        return randBot()
+        
 # Nodes
 class Node:
     def __init__(self):
