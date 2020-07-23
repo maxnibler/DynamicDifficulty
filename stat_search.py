@@ -54,7 +54,7 @@ class simulate_node:
             result = simulate_game(state)
             if result > 0:
                 total += 1
-        return total/10
+        return round(total/10, 1)
 
 class node:
     key = ""
