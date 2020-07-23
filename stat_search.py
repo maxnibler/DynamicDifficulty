@@ -49,8 +49,12 @@ class simulate_node:
             'Attack Damage' : self.attackDamage
         }
         state = GameState(dict(playerStats), dict(enemyStats))
+        total = 0
         for i in range(10):
-            self.win += simulate_game(state)
+            result = simulate_game(state)
+            if result > 0:
+                total += 1
+        return total/10
 
 class node:
     key = ""
@@ -93,40 +97,57 @@ def expand(parent, key, low, high, increment):
     return parent
 
 def tupleRand(pair):
+    if pair[0] == pair[1]:
+        return pair[0]
     rand = random.randrange(pair[0], pair[1])
     return rand
 
-def findStat(key, ranges, playerStats):
+def findStat(key, ranges, playerStats, winrate):
     statRange = ranges[key]
     root = node("Root", 0)
-    root.printSelf()
     root = expand(root, key, statRange[0], statRange[1], 1)
-    for healthNode in root.getChildren():
-        simNode = simulate_node(healthNode)
+    fitNodes = []
+    for currNode in root.getChildren():
+        simNode = simulate_node(currNode)
         hDef = tupleRand(ranges['Health'])
         sDef = tupleRand(ranges['Strength'])
         dDef = tupleRand(ranges['Dexterity'])
         aDef = tupleRand(ranges['Attack Damage'])
         simNode.setDefaults(hDef, sDef, dDef, aDef)
-        simNode.execute(playerStats)
-        simNode.printSelf()
-    return 100
+        if winrate == simNode.execute(playerStats):
+            fitNodes.append(currNode)
+    ind = 0
+    if len(fitNodes) < 1:
+        print("Error: no value found for", key)
+        theList = root.getChildren()
+        i = round(len(theList)/2)
+        return theList[i].value
+    if len(fitNodes) > 1:
+        ind = len(fitNodes) / 2
+        ind = round(ind)
+    return fitNodes[ind].value
 
 
 def searchStats(playerStats, winrate):
-    eStats = {}
-    eStats['Health'] = 100
-    eStats['Strength'] = 10
-    eStats['Dexterity'] = 10
-    eStats['Attack Damage'] = 10
     ranges = {
         'Health': (10, 200),
         'Strength': (5, 40),
         'Dexterity': (5, 40),
         'Attack Damage': (1, 40)
     }
-    print(findStat('Health', ranges, playerStats))
-    print(findStat('Strength', ranges, playerStats))
-    print(findStat('Dexterity', ranges, playerStats))
-    print(findStat('Attack Damage', ranges, playerStats))
+    winrate = winrate/100
+    winrate = round(winrate, 1)
+    health = findStat('Health', ranges, playerStats, winrate)
+    ranges['Health'] = (health, health)
+    str = findStat('Strength', ranges, playerStats, winrate)
+    ranges['Strength'] = (str, str)
+    dex = findStat('Dexterity', ranges, playerStats, winrate)
+    ranges['Dexterity'] = (dex, dex)
+    ad = findStat('Attack Damage', ranges, playerStats, winrate)
+    eStats = {}
+    eStats['Health'] = health
+    eStats['Strength'] = str
+    eStats['Dexterity'] = dex
+    eStats['Attack Damage'] = ad
+    print(eStats)
     return eStats
