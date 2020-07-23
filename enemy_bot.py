@@ -11,23 +11,58 @@ class enemy_bot:
         self.stats = new_stats
 
     def behavior_tree_setup(self):
-        root = Sequence(name = 'Main Enemy Node')
+        root = RandomSelector(name = 'Main Enemy Node')
 
         dodging = Action('Dodge')
         l_attacking = Action('Light Attack')
         parrying = Action('Parry')
         h_attacking = Action('Heavy Attack')
 
+        if dex_higher_than_str(self.stats):
+            if enemy_more_health(self.stats, self.player_stats):
+                root.child_nodes = [l_attacking]
+
+            else:
+                dex_low_health = RandomSelector(name = "Dexterity Branch low Health")
+                dex_low_health.child_nodes = [l_attacking, dodging]
+                root.child_nodes = [dex_low_health]
+
+        elif str_higher_than_dex(self.stats):
+            if enemy_more_health(self.stats, self.player_stats):
+                root.child_nodes = [h_attacking]
+
+            else:
+                str_low_health = RandomSelector(name = "Strength Branch low Health")
+                str_low_health.child_nodes = [h_attacking, parrying]
+                root.child_nodes = [str_low_health]
+
+        else:
+            if enemy_more_health(self.stats, self.player_stats):
+                rand_attack = RandomSelector(name = "Random Attack")
+                rand_attack.child_nodes = [l_attacking, h_attacking]
+                root.child_nodes = [rand_attack]
+
+            else:
+                all_actions = RandomSelector(name = "All Actions")
+                all_actions.child_nodes = [l_attacking, h_attacking, parrying, dodging]
+                root.child_nodes = [all_actions]
+        """
+        falsy = FalseNode()
+        
         dex_execute = Sequence(name = "Dexterity Execute")
-        dex_check = Check(dex_higher_than_str(self.stats))
-        dex_branch = Selector(name = 'Dexterity Branch')
-        health_check = Sequence(name = "Health Check")
-        health_compare = Check(enemy_more_health(self.stats, self.player_stats))
-        dex_low_health = RandomSelector(name = "Dexterity Branch low Health")
-        health_check.child_nodes = [health_compare, l_attacking]
-        dex_low_health.child_nodes = [l_attacking, dodging]
-        dex_branch.child_nodes = [health_check, dex_low_health]
-        dex_execute.child_nodes = [dex_check, dex_branch]
+        dex_check = dex_higher_than_str(self.stats)
+        if dex_check is not False:
+            health_compare = enemy_more_health(self.stats, self.player_stats)
+            if health_compare is not False:
+                
+
+            dex_branch = Selector(name = 'Dexterity Branch')
+            health_check = Sequence(name = "Health Check")
+            dex_low_health = RandomSelector(name = "Dexterity Branch low Health")
+            health_check.child_nodes = [health_compare, l_attacking]
+            dex_low_health.child_nodes = [l_attacking, dodging]
+            dex_branch.child_nodes = [health_check, dex_low_health]
+            dex_execute.child_nodes = [dex_branch]
 
         str_execute = Sequence(name = "Strength Execute")
         str_check = Check(str_higher_than_dex(self.stats))
@@ -49,6 +84,7 @@ class enemy_bot:
         neutral.child_nodes = [health_check3, all_actions]
 
         root.child_nodes = [dex_execute, str_execute, neutral]
+        """
         return root
 
     def behavior_tree_run(self):
@@ -74,7 +110,13 @@ class Check(Node):
         self.check_function = check_function
 
     def execute(self):
-        return self.check_function
+        return self.check_function()
+
+class FalseNode(Node):
+    def __init__(self, name=None):
+        self.name = name
+    def execute(self):
+        return False
 
 # Composite Nodes
 # Sequence Node code taken from P4
